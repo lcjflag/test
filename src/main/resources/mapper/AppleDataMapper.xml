@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lcj.smartclub.mapper.AppleDataMapper">
+    <resultMap id="BaseResultMap" type="com.lcj.smartclub.pojo.AppleData">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="experiment" property="experiment" jdbcType="VARCHAR"/>
+        <result column="rgb" property="rgb" jdbcType="VARCHAR"/>
+        <result column="nir" property="nir" jdbcType="VARCHAR"/>
+        <result column="views" property="views" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,experiment,rgb,nir,views
+    </sql>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_apple_data;
+    </select>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_apple_data
+        where id = #{id};
+    </select>
+
+    <insert id="insert" parameterType="com.lcj.smartclub.pojo.AppleData">
+        insert into sys_apple_data(id,experiment,rgb,nir,views)
+        values(#{id},#{experiment},#{rgb},#{nir},0);
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from sys_apple_data
+        where id = #{id};
+    </delete>
+</mapper>

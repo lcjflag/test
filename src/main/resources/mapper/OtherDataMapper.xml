@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lcj.smartclub.mapper.OtherDataMapper">
+    <resultMap id="BaseResultMap" type="com.lcj.smartclub.pojo.OtherData">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,description,url
+    </sql>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_other_data;
+    </select>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_other_data
+        where id = #{id};
+    </select>
+
+    <insert id="insert" parameterType="com.lcj.smartclub.pojo.OtherData">
+        insert into sys_other_data(id,description,url)
+        values(#{id},#{description},#{url});
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from sys_other_data
+        where id = #{id};
+    </delete>
+</mapper>

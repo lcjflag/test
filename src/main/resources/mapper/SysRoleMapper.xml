@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lcj.smartclub.mapper.SysRoleMapper">
+    <resultMap id="BaseResultMap" type="com.lcj.smartclub.pojo.SysRole">
+        <id column="id" property="roleId" jdbcType="INTEGER"/>
+        <result column="roleName" property="roleName" jdbcType="VARCHAR"/>
+        <result column="roleDesc" property="Desc" jdbcType="VARCHAR"/>
+        <collection column="id" property="sysPermissions" javaType="java.util.List" ofType="com.lcj.smartclub.pojo.SysPermission"
+                    select="findPermissionByRoleId"/>
+    </resultMap>
+
+    <resultMap id="SysPermission_BaseResultMap" type="com.lcj.smartclub.pojo.SysPermission">
+        <id column="id" property="permissionId" jdbcType="INTEGER"/>
+        <result column="permissionName" property="permissionName" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,roleName,roleDesc
+    </sql>
+
+    <sql id="SysPermission_Base_Column_List">
+        id,permissionName,url
+    </sql>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_role;
+    </select>
+
+    <select id="findPermissionByRoleId" resultMap="SysPermission_BaseResultMap">
+        select
+        <include refid="SysPermission_Base_Column_List"/>
+        from sys_permission
+        where id in
+        (select permissionId from sys_role_permission where roleId = #{roleId});
+    </select>
+
+    <select id="findOtherPermissionByRoleId" resultMap="SysPermission_BaseResultMap">
+        select
+        <include refid="SysPermission_Base_Column_List"/>
+        from sys_permission
+        where id not in
+        (select permissionId from sys_role_permission where roleId = #{roleId});
+    </select>
+
+    <insert id="insert" parameterType="com.lcj.smartclub.pojo.SysRole">
+        insert into sys_role(id,roleName,roleDesc)
+        values(#{roleId},#{roleName},#{Desc});
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from sys_role_permission
+        where roleId = #{roleId};
+        delete from sys_user_role
+        where roleId = #{roleId};
+        delete from sys_role
+        where id = #{roleId};
+    </delete>
+
+    <insert id="addPermissionToRole" parameterType="java.lang.Integer">
+        insert into sys_role_permission(roleId,permissionId)
+        values(#{roleId},#{permissionId});
+    </insert>
+
+    <delete id="deletePermissionFromRole" parameterType="java.lang.Integer">
+        delete from sys_role_permission
+        where roleId = #{roleId} and permissionId = #{permissionId};
+    </delete>
+</mapper>
